@@ -1,28 +1,28 @@
 import socket
 
-def Connected(tcp, msg):
+def Connected(client_socket, msg):
     while msg <> '\x18':
-
-        tcp.send (msg)
-        msg = raw_input()
         
+        client_socket.send (msg)
+        msg = raw_input()
+
     return
 
 
 HOST = '127.0.0.1'     # Endereco IP do Servidor
 PORT = 5001            # Porta que o Servidor esta
-tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 dest = (HOST, PORT)
 
-tcp.connect(dest)
+client_socket.connect(dest)
 print 'Para sair use CTRL+X\n'
-msg = raw_input()
 
-ack = tcp.recv(1024)
+hand_shake = client_socket.recv(1024)
 
-if ack == 'OK':
-    print 'ACK received'
-    Connected(tcp, msg)
+msg = 'Hello Server'
+if hand_shake == 'OK':
+    print 'Connection Stablished'
+    Connected(client_socket, msg)
 
-tcp.close()
+client_socket.close()
