@@ -11,7 +11,7 @@ def login(): #The credentials are made when the program starts and are passed as
     password = None                # In case they are nor found in the file                    #password1
     authorization = 0              # Set authorization as 0 in case the user and               #Username2
                                    # the password does not match in the file                   #password2
-    for i in range(0, len(users)):
+    for i in range(0, len(users)): #                                                           #...
         users[i] = users[i].strip() #fix the strings
 
     if len(sys.argv) < 2: #None credentials passed, create new username and passwords
@@ -25,6 +25,11 @@ def login(): #The credentials are made when the program starts and are passed as
             if username == users[i]:
                 print 'User already exists'
                 authorization = 0
+        users_file.write(username)
+        users_file.write('\n')
+        users_file.write(password)
+        users_file.write('\n')
+
 
     if len(sys.argv) == 2: #the user passed the username but not the password
         for i in range(0, len(users)): #check if the username is valid (if exists in the database)
