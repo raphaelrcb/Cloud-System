@@ -1,16 +1,19 @@
 import socket
 import sys
 import authenticate
+import client_commands
 
 def Connected(client_socket, msg):
     user, password, login = authenticate.client_login(sys.argv, client_socket)
     print 'Seja bem vindo ', user, "!\n Execute o comando 'help' para mais opcoes:"
-    print 'Para sair use CTRL+X\n'
     while msg <> '\x18':
         # server_msg = client_socket.recv(1024)
         # print server_msg
         client_socket.send (msg)
         msg = raw_input()
+        if msg == 'help':
+            client_commands.help()
+
     return
 
 
