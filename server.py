@@ -36,9 +36,6 @@ def thread_iniciated(connect, client, server_path):
     connect.send(client_path)
     while True:
 
-        #wait for command from client
-        #execute command
-        #send client response     client_path = path[0]
         command = connect.recv(1024)
         print client, command
         if command == 'checkdir':
@@ -57,7 +54,7 @@ def thread_iniciated(connect, client, server_path):
         if command == 'mv':
             command = connect.recv(1024)
             command = command.split(";")
-            # print dest_dir
+
             protocol.mv(command[0], command[1], current_path, server_path)
 
         if command == 'download':
@@ -70,7 +67,6 @@ def thread_iniciated(connect, client, server_path):
         if not command: break
 
     connect.close()
-    print 'saiu do loop'
     return 'Close'
 
 HOST = ''              # Endereco IP do Servidor

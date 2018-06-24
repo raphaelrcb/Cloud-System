@@ -7,12 +7,9 @@ def Connected(client_socket, command):
     print 'Seja bem vindo ', user, "!\n Execute o comando 'help' para mais opcoes:"
     path = client_socket.recv(1024)
     while command[0] <> '\x18':
-        # server_msg = client_socket.recv(1024)
-        # print server_msg
+        
         command = raw_input("What do you wish to do?:~/" + path + " >")
         command = command.split()
-        #command = raw_input()
-        #command = command.split()
 
         if command[0] == 'help':
             protocol.help()

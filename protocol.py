@@ -2,7 +2,7 @@ import sys
 import os
 import shutil
 
-#OK
+
 def server_login(connect, client, server_path): #The credentials are made when the program starts and are passed as arguments when executing the program (python program.py username password).
     #In case the user does not pass any credentials, the program understands a new user is being created
     #In case the user pass only his or hers username, the program understands it and asks for the respective password
@@ -81,7 +81,7 @@ def server_login(connect, client, server_path): #The credentials are made when t
     return (username, password, authorization)
     #print "Number of arguments: ", len(sys.argv)
     #print "The arguments are: " , str(sys.argv
-#OK
+
 def client_login(argv, client_socket):
 
     username = None                # Setting null values for username and password             #Username1
@@ -127,7 +127,7 @@ def client_login(argv, client_socket):
             quit()
 
     return username, password, 1
-#OK
+
 def upload(connect, current_path):
     #print "download ", command[1]
     connect.send('sync')
@@ -178,7 +178,7 @@ def checkdir(connect, path):
         files = "/".join(files)
         connect.send(files)
     return
-#OK
+
 def cd(current_path,  client_path, command, path):
 
     temp = command[1].split('/')
@@ -204,12 +204,12 @@ def cd(current_path,  client_path, command, path):
 
     os.chdir(current_path)
     return current_path, client_path
-#OK
+
 def mv(org_file, dest_dir, current_path, server_path):
     if (os.path.isdir(org_file) or os.path.isfile(org_file)) and (os.path.isdir(server_path + "/" + dest_dir) or os.path.isfile( server_path + "/" + dest_dir)):
         shutil.move(current_path + "/" + org_file, server_path + "/" + dest_dir)
     return
-#OK
+
 def rm(file, current_path):
     if os.path.isdir(file):
         if os.listdir(current_path + '/' + file) == []:
@@ -220,12 +220,12 @@ def rm(file, current_path):
         os.remove(file)
 
     return
-#OK
+
 def makedir(dirname, path):
     os.chdir(path)
     os.mkdir(dirname)
     return
-#OK
+
 def help():
     print "-----Lista de Comandos----"
     print "- checkdir -> apresenta as pastas e arquivos presentes no diretorio corrente."
@@ -237,7 +237,7 @@ def help():
     print "- download file -> faz o download do arquivo 'file' para a sua maquina"
     print "- CTRL+X -> Sai do programa e fecha a conexao"
     return
-#OK
+
 def cl_checkdir(client_socket, path, command):
     client_socket.send(command[0])
     files = client_socket.recv(1024)
@@ -246,7 +246,7 @@ def cl_checkdir(client_socket, path, command):
     print '\n', files, '\n'
     # client_socket.send(path)
     return
-#OK
+
 def cl_cd(client_socket, command, path):
     client_socket.send(command[0])
     command = ";".join(command)
@@ -254,17 +254,17 @@ def cl_cd(client_socket, command, path):
     path = client_socket.recv(1024)
 
     return path
-#OK
+
 def cl_mv(client_socket, command):#command[1] = org_file
     client_socket.send(command[0])
     client_socket.send(command[1] + ';' + command[2])
     return
-#OK
+
 def cl_rm(client_socket, command):
     client_socket.send(command[0])
     client_socket.send(command[1])
     return
-#OK
+
 def cl_makedir(client_socket,command):
     client_socket.send(command[0])
     client_socket.send(command[1])
@@ -288,11 +288,10 @@ def cl_upload(client_socket, command):
     transfer.close()
     client_socket.send('eof')
     return
-#OK
+
 def cl_download(client_socket, command):
 
     client_socket.send(command[0])
-    #print "download ", command[1]
     if client_socket.recv(1024) == 'sync':
         client_socket.send(command[1])
         print('receiving data...')
@@ -304,8 +303,6 @@ def cl_download(client_socket, command):
                     break
                 f.write(data)
                 client_socket.send('sync')
-        #print 'saiu do while '
         f.close()
     print 'transfer completer\n'
-#    client_socket.send('transfer complete')
     return
