@@ -69,7 +69,12 @@ def thread_iniciated(connect, client, server_path):
     connect.close()
     return 'Close'
 
-HOST = ''              # Endereco IP do Servidor
+
+
+HOST = socket.gethostbyname(socket.gethostname())              # Endereco IP do Servidor
+# HOST = '192.168.1.10'
+# HOST = '127.0.0.1'
+print HOST
 PORT = 5001            # Porta que o Servidor esta
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 orig = (HOST, PORT)
