@@ -44,9 +44,13 @@ def Connected(client_socket, command):
             print "command does not exists"
     return
 
-
-HOST = '127.0.0.1'     # Endereco IP do Servidor
-PORT = 5000            # Porta que o Servidor esta
+check_ip = sys.argv[1].split('.')
+if len(check_ip) != 4:
+    print "Ip not reconigzed"
+    quit()
+HOST = sys.argv[1]     # Endereco IP do Servidor
+del sys.argv[1]
+PORT = 5001            # Porta que o Servidor esta
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 dest = (HOST, PORT)

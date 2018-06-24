@@ -4,7 +4,6 @@ import thread
 import sys
 import protocol
 import os
-import authenticate
 
 def thread_iniciated(connect, client, server_path):
     connect.send('OK')
@@ -24,14 +23,14 @@ def thread_iniciated(connect, client, server_path):
         connect.send(failed)
         quit()
     if login == 2:
-         protocol.makedir(server_path)
-         os.chdir(server_path)
+         protocol.makedir(path[0],server_path)
+         os.chdir(current_path)
          #send relative path
     if login == 1:
         if os.path.isdir(current_path):
             os.chdir(current_path)
         else:
-            protocol.makedir(current_path)
+            protocol.makedir(path[0], server_path)
             os.chdir(current_path)
 
     connect.send(client_path)
@@ -75,7 +74,7 @@ def thread_iniciated(connect, client, server_path):
     return 'Close'
 
 HOST = ''              # Endereco IP do Servidor
-PORT = 5000            # Porta que o Servidor esta
+PORT = 5001            # Porta que o Servidor esta
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 orig = (HOST, PORT)
 server_path = os.getcwd()
