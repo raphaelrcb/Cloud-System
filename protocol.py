@@ -134,21 +134,19 @@ def upload(connect, current_path):
     file_name = connect.recv(1024)
     file_name = file_name.split('/')
     file_name = current_path + '/' + file_name[-1 ]
-    print('receiving data...')
+    # print('receiving data...')
     with open(file_name, 'wb') as f:
-        print '\n\nvai', file_name, '\n\n  '
         while True:
             data = connect.recv(1024)
-            print data, '----'
+            # print data, '----'
             if (not data) or (data == 'eof'):
-                print 'cabou'
                 break
             f.write(data)
             connect.send('sync')
         #print 'saiu do while '
         f.close()
-    print 'transfer completer\n'
-#    connect.send('transfer complete')
+        # print 'transfer completer\n'
+        #    connect.send('transfer complete')
     # if connect.recv(1024) == 'sync':
     #     print 'deu certp'
     return
@@ -184,8 +182,11 @@ def checkdir(connect, path):
 def cd(current_path,  client_path, command, path):
 
     temp = command[1].split('/')
-    if temp[0] == '..' and client_path == path[0]:
-        print "Cant do that"
+
+    for x in range(0, len(temp)):
+        if not os.path.isdir(temp[x]):
+            return current_path, client_path
+
     if temp[0] == '..' and client_path != path[0]:
         current_path = current_path.split('/')
         client_path = client_path.split('/')
@@ -202,7 +203,7 @@ def cd(current_path,  client_path, command, path):
                 client_path = client_path + '/' + temp[i]
 
     os.chdir(current_path)
-    return current_path, client_path, command
+    return current_path, client_path
 #OK
 def mv(org_file, dest_dir, current_path, server_path):
     if (os.path.isdir(org_file) or os.path.isfile(org_file)) and (os.path.isdir(server_path + "/" + dest_dir) or os.path.isfile( server_path + "/" + dest_dir)):
@@ -220,7 +221,8 @@ def rm(file, current_path):
 
     return
 #OK
-def makedir(dirname):
+def makedir(dirname, path):
+    os.chdir(path)
     os.mkdir(dirname)
     return
 #OK
@@ -238,17 +240,15 @@ def help():
 #OK
 def cl_checkdir(client_socket, path, command):
     client_socket.send(command[0])
-    print 'execute checkdir'
     files = client_socket.recv(1024)
     if files != '[]':
         files = files.split('/')
-    print files
+    print '\n', files, '\n'
     # client_socket.send(path)
     return
 #OK
 def cl_cd(client_socket, command, path):
     client_socket.send(command[0])
-    print "Access 'path_to_dir'"
     command = ";".join(command)
     client_socket.send(command)
     path = client_socket.recv(1024)
@@ -256,25 +256,22 @@ def cl_cd(client_socket, command, path):
     return path
 #OK
 def cl_mv(client_socket, command):#command[1] = org_file
-    print "move ", command[1], "to ", command[2]
     client_socket.send(command[0])
     client_socket.send(command[1] + ';' + command[2])
     return
 #OK
 def cl_rm(client_socket, command):
     client_socket.send(command[0])
-    print "remove directory ", command[1]
     client_socket.send(command[1])
     return
 #OK
 def cl_makedir(client_socket,command):
     client_socket.send(command[0])
-    print "create directory ", command[1]
     client_socket.send(command[1])
     return
 
 def cl_upload(client_socket, command):
-    print "upload file from ", command[1]
+    # print "upload file from ", command[1]
     client_socket.send(command[0])
 
     if client_socket.recv(1024) == 'sync':
@@ -290,9 +287,6 @@ def cl_upload(client_socket, command):
                 break
     transfer.close()
     client_socket.send('eof')
-
-
-
     return
 #OK
 def cl_download(client_socket, command):
@@ -307,7 +301,6 @@ def cl_download(client_socket, command):
                 data = client_socket.recv(1024)
                 #print data, '----'
                 if (not data) or (data == 'eof'):
-                    print 'cabou'
                     break
                 f.write(data)
                 client_socket.send('sync')

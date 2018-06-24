@@ -9,7 +9,6 @@ import authenticate
 def thread_iniciated(connect, client, server_path):
     connect.send('OK')
     print 'Concetado por', client
-    print server_path
     user,password,login = protocol.server_login(connect,client, server_path)
 
     current_path = server_path
@@ -25,12 +24,10 @@ def thread_iniciated(connect, client, server_path):
         connect.send(failed)
         quit()
     if login == 2:
-         print "New User, create and access 'home_user'"
          protocol.makedir(server_path)
          os.chdir(server_path)
          #send relative path
     if login == 1:
-        print "Access 'home_user'"
         if os.path.isdir(current_path):
             os.chdir(current_path)
         else:
@@ -50,11 +47,11 @@ def thread_iniciated(connect, client, server_path):
         if command == 'cd':
             command = connect.recv(1024)
             command = command.split(";")
-            current_path, client_path, command = protocol.cd(current_path, client_path, command, path)
+            current_path, client_path = protocol.cd(current_path, client_path, command, path)
             connect.send(client_path)
         if command == 'makedir':
             command = connect.recv(1024)
-            protocol.makedir(command)
+            protocol.makedir(command, current_path)
         if command == 'rm':
             file = connect.recv(1024)
             protocol.rm(file, current_path)
