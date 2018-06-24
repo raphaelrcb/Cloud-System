@@ -1,44 +1,49 @@
 import socket
 import sys
-import authenticate
-import client_commands
+import protocol
 
 def Connected(client_socket, command):
-    user, password, login = authenticate.client_login(sys.argv, client_socket)
+    user, password, login = protocol.client_login(sys.argv, client_socket)
     print 'Seja bem vindo ', user, "!\n Execute o comando 'help' para mais opcoes:"
+    path = client_socket.recv(1024)
     while command[0] <> '\x18':
         # server_msg = client_socket.recv(1024)
         # print server_msg
-        command = raw_input()
+        command = raw_input("What do you wish to do?\n" + path    + " > ")
         command = command.split()
+        #command = raw_input()
+        #command = command.split()
 
         if command[0] == 'help':
-            client_commands.help()
+            protocol.help()
 
         elif command[0] == 'checkdir':
-            client_commands.checkdir()
+            protocol.cl_checkdir(client_socket, path, command)
 
         elif command[0] == 'cd' and len(command) > 1:
-            client_commands.cd(command[1])
+            if command[1] == '..' and path == 'home_' + user:
+                print 'cant do thath'
+            path = protocol.cl_cd(client_socket, command, path)
 
-        elif command[0] == 'mv' and len(command) > 2:
-            client_commands.mv(command[1], command[2])
+        elif command[0] == 'mv' and len(command) == 3:
+            protocol.cl_mv(client_socket, command)
 
         elif command[0] == 'rm' and len(command) > 1:
-            client_commands.rm(command[1])
+            protocol.cl_rm(client_socket,command)
 
         elif command[0] == 'makedir' and len(command) > 1:
-            client_commands.makedir(command[1])
-
-        elif command[0] == 'upload' and len(command) > 1:
-            client_commands.upload(command[1])
+            protocol.cl_makedir(client_socket, command)
 
         elif command[0] == 'download' and len(command) > 1:
-            client_commands.download(command[1])
+            protocol.cl_download(client_socket, command)
+
+        elif command[0] == 'upload' and len(command) > 1:
+            protocol.cl_upload(client_socket, command)
+
         else:
             print "command does not exists"
 
-        client_socket.send (command[0])
+        print "mandou"
     return
 
 
